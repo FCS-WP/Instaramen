@@ -1,0 +1,24 @@
+.store-map-container {
+    display: flex;
+}
+
+.store-list {
+    width: 30%;
+    padding: 20px;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    overflow-y: auto;
+    max-height: 500px;
+}
+.store-item{
+    margin: 10px 0;
+}
+
+#custom-map {
+    width: 70%;
+    height: 500px;
+}
+#store-search{
+    width: 100%;
+    padding: 5px 10px;
+    margin-bottom: 30px;
+}
