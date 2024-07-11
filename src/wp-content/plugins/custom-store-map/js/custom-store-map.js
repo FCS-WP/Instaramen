@@ -1,11 +1,10 @@
 jQuery(document).ready(function($) {
-    var defaultIcon = '/wp-content/uploads/2024/07/icon-store.png';
-    var defaultIconMarker = '/wp-content/uploads/2024/07/icon-map-store.png';
-
+    var defaultIcon = '/wp-content/uploads/2024/07/icon-map-store.png';
+    var locationCountry = customStoreMapSettings.location_country.split(',');
     function initMap() {
         var map = new google.maps.Map(document.getElementById('custom-map'), {
             zoom: 12,
-            center: {lat: 10.8231, lng: 106.6297} 
+            center: {lat: parseFloat(locationCountry[0]), lng: parseFloat(locationCountry[1])}
         });
 
         var locations = customStoreMapData;
@@ -16,8 +15,9 @@ jQuery(document).ready(function($) {
                 marker.setMap(null);
             });
             markers = [];
+             
             locations.forEach(function(location) {
-                var icon = location.icon ? location.icon : defaultIconMarker; 
+                var icon = location.icon ? location.icon : defaultIcon; 
                 var marker = new google.maps.Marker({
                     position: {lat: parseFloat(location.location.split(',')[0]), lng: parseFloat(location.location.split(',')[1])},
                     map: map,
@@ -32,10 +32,9 @@ jQuery(document).ready(function($) {
                     content: `<div>
                                 <strong>${location.name}</strong><br>
                                 <span>${location.address}</span><br>
-                                <a href="${location.page_link}">View Items</a>
+                                <a href="${location.page_link}" target="_blank">View Items</a>
                             </div>`
                 });
-                
 
                 marker.addListener('click', function() {
                     infoWindow.open(map, marker);
@@ -58,7 +57,7 @@ jQuery(document).ready(function($) {
 
         $('#store-list').on('click', '.store-item', function() {
             var location = $(this).data('location').split(',');
-            var latLng = new google.maps.LatLng(location[0], location[1]);
+            var latLng = new google.maps.LatLng(parseFloat(location[0]), parseFloat(location[1]));
             map.setCenter(latLng);
             map.setZoom(16);
         });
@@ -77,7 +76,6 @@ jQuery(document).ready(function($) {
                 );
             });
         }
-
         updateStoreList(locations);
     }
 
