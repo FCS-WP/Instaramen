@@ -1,0 +1,264 @@
+<?php
+/*
+Plugin Name: Custom Store Map Plugin
+Description: The plugin displays a map with shops and search functionality.
+Version: 1.0
+Author: ToanPham
+*/
+
+if (!defined('ABSPATH')) {
+    exit;
+}
+ include plugin_dir_path(__FILE__) . 'admin/countries.php';
+class CustomStoreMapPlugin
+{
+    private $countries;
+    public function __construct()
+    {
+        global $country_coordinates;
+        add_action('init', array($this, 'create_store_taxonomies'), 0);
+
+        add_action('admin_menu', array($this, 'create_admin_menu'));
+        add_action('admin_enqueue_scripts', array($this, 'enqueue_admin_scripts'));
+        add_action('wp_enqueue_scripts', array($this, 'enqueue_scripts'));
+        add_shortcode('custom_store_map', array($this, 'shortcode_callback'));
+        add_action('admin_init', array($this, 'register_settings'));
+        add_action('store-name_add_form_fields', array($this, 'add_taxonomy_fields'));
+        add_action('store-name_edit_form_fields', array($this, 'edit_taxonomy_fields'));
+
+        add_action('created_store-name', array($this, 'save_taxonomy_fields'), 10, 2);
+        add_action('edited_store-name', array($this, 'save_taxonomy_fields'), 10, 2);
+
+        register_deactivation_hook(__FILE__, array($this, 'plugin_deactivation'));
+
+        $this->countries = $country_coordinates;
+    }
+
+    public function create_admin_menu()
+    {
+        add_menu_page(
+            'Custom Store Map',
+            'Custom Store Map',
+            'manage_options',
+            'custom-store-map',
+            array($this, 'admin_page_callback'),
+            'dashicons-location',
+            100
+        );
+    }
+
+    public function enqueue_admin_scripts()
+    {
+        wp_enqueue_script('custom-store-map-admin', plugin_dir_url(__FILE__) . 'js/admin.js', array('jquery', 'media-upload', 'thickbox'), null, true);
+        wp_enqueue_style('custom-store-map-admin', plugin_dir_url(__FILE__) . 'css/admin.css');
+        wp_enqueue_style('thickbox');
+    }
+
+    public function enqueue_scripts()
+    {
+        $api_key = get_option('custom_store_map_api_key', '');
+        $location_country = get_option('custom_store_map_location_country', '10.8231,106.6297'); // Default to Ho Chi Minh City
+
+        wp_enqueue_script('google-maps-api', 'https://maps.googleapis.com/maps/api/js?key=' . $api_key, array(), null, true);
+        wp_enqueue_script('custom-store-map', plugin_dir_url(__FILE__) . 'js/custom-store-map.js', array('jquery'), null, true);
+        wp_localize_script('custom-store-map', 'customStoreMapSettings', array(
+            'location_country' => $location_country
+        ));
+        wp_enqueue_style('custom-store-map', plugin_dir_url(__FILE__) . 'css/custom-store-map.css');
+    }
+
+    public function admin_page_callback()
+    {
+        include 'admin/admin-page.php';
+    }
+
+    public function shortcode_callback()
+    {
+        ob_start();
+        include 'templates/map-template.php';
+        return ob_get_clean();
+    }
+
+    public function register_settings()
+    {
+        register_setting('custom_store_map_settings', 'custom_store_map_api_key');
+        register_setting('custom_store_map_settings', 'custom_store_map_location_country');
+
+        add_settings_section(
+            'custom_store_map_section',
+            'Store Locations',
+            array($this, 'section_callback'),
+            'custom-store-map'
+        );
+
+        add_settings_field(
+            'location_country',
+            'Location Country (lat,lng)',
+            array($this, 'location_country_callback'),
+            'custom-store-map',
+            'custom_store_map_section'
+        );
+
+        add_settings_field(
+            'api_key',
+            'Google Maps API Key',
+            array($this, 'api_key_callback'),
+            'custom-store-map',
+            'custom_store_map_section'
+        );
+    }
+
+    public function section_callback()
+    {
+        echo '<p>To display the store map on your website, use the shortcode <strong>[custom_store_map]</strong> in any page.</p>';
+    }
+
+    public function location_country_callback()
+    {
+        $location_country = get_option('custom_store_map_location_country', '');
+        ?>
+        <select name="custom_store_map_location_country">
+            <option value="">Select a country...</option>
+            <?php foreach ($this->countries as $country => $coords): ?>
+                <option value="<?php echo esc_attr($coords); ?>" <?php selected($location_country, $coords); ?>>
+                    <?php echo esc_html($country); ?>
+                </option>
+            <?php endforeach; ?>
+        </select>
+        <p class="description">Select the default country for the map.</p>
+        <?php
+    }
+    
+
+    public function api_key_callback()
+    {
+        $api_key = get_option('custom_store_map_api_key', '');
+    ?>
+        <input type="text" name="custom_store_map_api_key" value="<?php echo esc_attr($api_key); ?>" placeholder="Enter Google Maps API Key" />
+        <p class="description">Please enter the Google Map API key.</p>
+    <?php
+    }
+
+    public function create_store_taxonomies()
+    {
+        $labels = array(
+            'name' => 'Store Names',
+            'singular_name' => 'Store Name',
+            'search_items' => 'Search Store Names',
+            'all_items' => 'All Store Names',
+            'parent_item' => 'Parent Store Name',
+            'parent_item_colon' => 'Parent Store Name:',
+            'edit_item' => 'Edit Store Name',
+            'update_item' => 'Update Store Name',
+            'add_new_item' => 'Add New Store Name',
+            'new_item_name' => 'New Store Name',
+            'menu_name' => 'Store Names',
+        );
+
+        $args = array(
+            'hierarchical' => true,
+            'labels' => $labels,
+            'show_ui' => true,
+            'show_admin_column' => true,
+            'query_var' => true,
+            'rewrite' => array('slug' => 'store-name', 'with_front' => false),
+            'show_in_rest' => true,
+        );
+
+        register_taxonomy('store-name', 'product', $args);
+    }
+
+    public function add_taxonomy_fields()
+    {
+    ?>
+        <div class="form-field">
+            <label for="store-address">Store Address</label>
+            <input type="text" name="term_meta[store-address]" id="store-address" />
+            <p class="description">Enter the address of the store.</p>
+        </div>
+        <div class="form-field">
+            <label for="store-location">Store Location (lat,lng)</label>
+            <input type="text" name="term_meta[store-location]" id="store-location" />
+            <p class="description">Enter the location coordinates of the store.</p>
+        </div>
+        <div class="form-field">
+            <label for="store-map-link">Map Link</label>
+            <input type="text" name="term_meta[store-map-link]" id="store-map-link" />
+            <p class="description">Enter the link to the store's map.</p>
+        </div>
+        <div class="form-field">
+            <label for="store-icon">Store Icon</label>
+            <input type="hidden" name="term_meta[store-icon]" id="store-icon" class="store-icon" value="">
+            <div class="image-preview"></div>
+            <button type="button" class="upload-image-button button">Upload/Select Image</button>
+            <p class="description">Upload or select an image for the store's icon.</p>
+        </div>
+    <?php
+    }
+
+    public function edit_taxonomy_fields($term)
+    {
+        $term_id = $term->term_id;
+        $term_meta = get_option("taxonomy_$term_id");
+    ?>
+        <tr class="form-field">
+            <th scope="row" valign="top"><label for="store-address">Store Address</label></th>
+            <td>
+                <input type="text" name="term_meta[store-address]" id="store-address" value="<?php echo esc_attr($term_meta['store-address']) ? esc_attr($term_meta['store-address']) : ''; ?>" />
+                <p class="description">Enter the address of the store.</p>
+            </td>
+        </tr>
+        <tr class="form-field">
+            <th scope="row" valign="top"><label for="store-location">Store Location (lat,lng)</label></th>
+            <td>
+                <input type="text" name="term_meta[store-location]" id="store-location" value="<?php echo esc_attr($term_meta['store-location']) ? esc_attr($term_meta['store-location']) : ''; ?>" />
+                <p class="description">Enter the location coordinates of the store.</p>
+            </td>
+        </tr>
+        <tr class="form-field">
+            <th scope="row" valign="top"><label for="store-map-link">Map Link</label></th>
+            <td>
+                <input type="text" name="term_meta[store-map-link]" id="store-map-link" value="<?php echo esc_attr($term_meta['store-map-link']) ? esc_attr($term_meta['store-map-link']) : ''; ?>" />
+                <p class="description">Enter the link to the store's map.</p>
+            </td>
+        </tr>
+        <tr class="form-field">
+            <th scope="row" valign="top"><label for="store-icon">Store Icon</label></th>
+            <td>
+                <input type="hidden" name="term_meta[store-icon]" id="store-icon" class="store-icon" value="<?php echo esc_attr($term_meta['store-icon']) ? esc_attr($term_meta['store-icon']) : ''; ?>">
+                <button type="button" class="upload-image-button button">Upload/Select Image</button>
+                <div class="image-preview">
+                    <?php if (!empty($term_meta['store-icon'])) : ?>
+                        <img src="<?php echo esc_url($term_meta['store-icon']); ?>" style="max-width: 100px; max-height: 100px;" />
+                    <?php endif; ?>
+                </div>
+                <p class="description">Upload or select an image for the store's icon.</p>
+            </td>
+        </tr>
+    <?php
+    }
+
+    public function save_taxonomy_fields($term_id)
+    {
+        if (isset($_POST['term_meta'])) {
+            $term_meta = get_option("taxonomy_$term_id");
+            $cat_keys = array_keys($_POST['term_meta']);
+            foreach ($cat_keys as $key) {
+                if (isset($_POST['term_meta'][$key])) {
+                    $term_meta[$key] = $_POST['term_meta'][$key];
+                }
+            }
+            update_option("taxonomy_$term_id", $term_meta);
+        }
+    }
+
+    public function plugin_deactivation()
+    {
+        unregister_taxonomy('store-name');
+        delete_option('custom_store_map_api_key');
+        delete_option('custom_store_map_location_country');
+    }
+}
+
+new CustomStoreMapPlugin();
+?>
