@@ -14,7 +14,7 @@ foreach ($terms as $term) {
             'name' => $term->name,
             'address' => $term_meta['store-address'],
             'location' => $term_meta['store-location'],
-            'page_link' => get_term_link($term), 
+            'page_link' => get_term_link($term),
             'icon' => isset($term_meta['store-icon']) ? esc_url($term_meta['store-icon']) : '',
         );
         $locations[] = $location_data;
@@ -30,9 +30,11 @@ $default_icon = '/wp-content/uploads/2024/07/icon-map-store.png';
         <div id="store-list">
             <?php foreach ($locations as $location) : ?>
                 <div class="store-item" data-location="<?php echo esc_attr($location['location']); ?>">
-                    <img src="<?php echo $location['icon'] ? esc_url($location['icon']) : esc_url($default_icon); ?>" alt="<?php echo esc_attr($location['name']); ?>" style="max-width: 50px; max-height: 50px;">
-                    <strong><?php echo esc_html($location['name']); ?></strong><br>
-                    <span><?php echo esc_html($location['address']); ?></span><br>
+                    <div class="d-flex align-items-center">
+                        <img src="<?php echo $location['icon'] ? esc_url($location['icon']) : esc_url($default_icon); ?>" alt="<?php echo esc_attr($location['name']); ?>" style="max-width: 50px; max-height: 50px;">
+                        <strong><?php echo esc_html($location['name']); ?></strong>
+                    </div>
+                    <span><?php echo esc_html($location['address']); ?></span>
                 </div>
             <?php endforeach; ?>
         </div>

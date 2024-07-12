@@ -3,7 +3,7 @@ jQuery(document).ready(function($) {
     var locationCountry = customStoreMapSettings.location_country.split(',');
     function initMap() {
         var map = new google.maps.Map(document.getElementById('custom-map'), {
-            zoom: 12,
+            zoom: 7,
             center: {lat: parseFloat(locationCountry[0]), lng: parseFloat(locationCountry[1])}
         });
 
@@ -56,12 +56,21 @@ jQuery(document).ready(function($) {
         });
 
         $('#store-list').on('click', '.store-item', function() {
+            $('#store-list .store-item').removeClass('active');
+            $(this).addClass('active');
+            
             var location = $(this).data('location').split(',');
             var latLng = new google.maps.LatLng(parseFloat(location[0]), parseFloat(location[1]));
             map.setCenter(latLng);
             map.setZoom(16);
         });
-
+        
+        $(document).on('click', function(event) {
+            if (!$(event.target).closest('.store-item').length) {
+                $('#store-list .store-item').removeClass('active');
+            }
+        });
+        
         function updateStoreList(locations) {
             var storeList = $('#store-list');
             storeList.empty();
@@ -69,9 +78,10 @@ jQuery(document).ready(function($) {
                 var icon = location.icon ? location.icon : defaultIcon;
                 storeList.append(
                     `<div class="store-item" data-location="${location.location}">
+                    <div class="d-flex align-items-center">
                         <img src="${icon}" alt="${location.name}" style="max-width: 50px; max-height: 50px;">
-                        <strong>${location.name}</strong><br>
-                        <span>${location.address}</span><br>
+                        <strong>${location.name}</strong></div>
+                        <span>${location.address}</span>
                     </div>`
                 );
             });
