@@ -21,7 +21,7 @@ foreach ($terms as $term) {
     }
 }
 
-$default_icon = '/wp-content/uploads/2024/07/icon-map-store.png';
+$default_icon = '/wp-content/plugins/custom-store-map/images/icon-map-store.png';
 ?>
 <div class="store-map-container">
     <div id="custom-map"></div>

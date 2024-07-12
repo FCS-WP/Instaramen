@@ -1,9 +1,10 @@
 jQuery(document).ready(function($) {
-    var defaultIcon = '/wp-content/uploads/2024/07/icon-map-store.png';
+    var defaultIcon = '/wp-content/plugins/custom-store-map/images/icon-map-store.png';
     var locationCountry = customStoreMapSettings.location_country.split(',');
+    var zoomLevel = parseInt(customStoreMapSettings.zoom_level, 10);
     function initMap() {
         var map = new google.maps.Map(document.getElementById('custom-map'), {
-            zoom: 7,
+            zoom: zoomLevel,
             center: {lat: parseFloat(locationCountry[0]), lng: parseFloat(locationCountry[1])}
         });
 

@@ -2,14 +2,14 @@
 /*
 Plugin Name: Custom Store Map Plugin
 Description: The plugin displays a map with shops and search functionality.
-Version: 1.0
-Author: ToanPham
+Version: 1.1
+Author: Zippy
 */
 
 if (!defined('ABSPATH')) {
     exit;
 }
- include plugin_dir_path(__FILE__) . 'admin/countries.php';
+include plugin_dir_path(__FILE__) . 'admin/countries.php';
 class CustomStoreMapPlugin
 {
     private $countries;
@@ -58,11 +58,13 @@ class CustomStoreMapPlugin
     {
         $api_key = get_option('custom_store_map_api_key', '');
         $location_country = get_option('custom_store_map_location_country', '10.8231,106.6297'); // Default to Ho Chi Minh City
+        $zoom_level = get_option('custom_store_map_zoom_level', '7'); // Default to level 7
 
         wp_enqueue_script('google-maps-api', 'https://maps.googleapis.com/maps/api/js?key=' . $api_key, array(), null, true);
         wp_enqueue_script('custom-store-map', plugin_dir_url(__FILE__) . 'js/custom-store-map.js', array('jquery'), null, true);
         wp_localize_script('custom-store-map', 'customStoreMapSettings', array(
-            'location_country' => $location_country
+            'location_country' => $location_country,
+            'zoom_level' => $zoom_level
         ));
         wp_enqueue_style('custom-store-map', plugin_dir_url(__FILE__) . 'css/custom-store-map.css');
     }
@@ -83,12 +85,27 @@ class CustomStoreMapPlugin
     {
         register_setting('custom_store_map_settings', 'custom_store_map_api_key');
         register_setting('custom_store_map_settings', 'custom_store_map_location_country');
+        register_setting('custom_store_map_settings', 'custom_store_map_zoom_level');
 
         add_settings_section(
             'custom_store_map_section',
             'Store Locations',
             array($this, 'section_callback'),
             'custom-store-map'
+        );
+        add_settings_field(
+            'api_key',
+            'Google Maps API Key',
+            array($this, 'api_key_callback'),
+            'custom-store-map',
+            'custom_store_map_section'
+        );
+        add_settings_field(
+            'zoom_level',
+            'Zoom Level',
+            array($this, 'zoom_level_callback'),
+            'custom-store-map',
+            'custom_store_map_section'
         );
 
         add_settings_field(
@@ -98,37 +115,47 @@ class CustomStoreMapPlugin
             'custom-store-map',
             'custom_store_map_section'
         );
-
-        add_settings_field(
-            'api_key',
-            'Google Maps API Key',
-            array($this, 'api_key_callback'),
-            'custom-store-map',
-            'custom_store_map_section'
-        );
     }
 
     public function section_callback()
     {
         echo '<p>To display the store map on your website, use the shortcode <strong>[custom_store_map]</strong> in any page.</p>';
+        echo '<h2>Add New Store Locations:</h2>';
+        echo '<p>Go to <strong>Products > Stores Name > Add New Store</strong>.</p>';
+        echo '<p>Enter the following information:</p>';
+        echo '<ul>';
+        echo '<li><strong>Store Name:</strong> Name of the store.</li>';
+        echo '<li><strong>Store Address:</strong> Address of the store.</li>';
+        echo '<li><strong>Store Location (lat,lng):</strong> Geographic coordinates of the store (for example: 10.762622, 106.660172).</li>';
+        echo '</ul>';
+        echo '<h2>Map Settings:</h2>';
     }
 
+
+    public function zoom_level_callback()
+    {
+        $zoom_level = get_option('custom_store_map_zoom_level', '7');
+?>
+        <input type="number" name="custom_store_map_zoom_level" value="<?php echo esc_attr($zoom_level); ?>" min="1" max="20" />
+        <p class="description">Please enter the default zoom level for the map (1-20).</p>
+    <?php
+    }
     public function location_country_callback()
     {
         $location_country = get_option('custom_store_map_location_country', '');
-        ?>
+    ?>
         <select name="custom_store_map_location_country">
             <option value="">Select a country...</option>
-            <?php foreach ($this->countries as $country => $coords): ?>
+            <?php foreach ($this->countries as $country => $coords) : ?>
                 <option value="<?php echo esc_attr($coords); ?>" <?php selected($location_country, $coords); ?>>
                     <?php echo esc_html($country); ?>
                 </option>
             <?php endforeach; ?>
         </select>
         <p class="description">Select the default country for the map.</p>
-        <?php
+    <?php
     }
-    
+
 
     public function api_key_callback()
     {
@@ -191,6 +218,7 @@ class CustomStoreMapPlugin
             <input type="hidden" name="term_meta[store-icon]" id="store-icon" class="store-icon" value="">
             <div class="image-preview"></div>
             <button type="button" class="upload-image-button button">Upload/Select Image</button>
+            <button type="button" class="remove-image-button button">Remove Image</button>
             <p class="description">Upload or select an image for the store's icon.</p>
         </div>
     <?php
@@ -227,6 +255,7 @@ class CustomStoreMapPlugin
             <td>
                 <input type="hidden" name="term_meta[store-icon]" id="store-icon" class="store-icon" value="<?php echo esc_attr($term_meta['store-icon']) ? esc_attr($term_meta['store-icon']) : ''; ?>">
                 <button type="button" class="upload-image-button button">Upload/Select Image</button>
+                <button type="button" class="remove-image-button button">Remove Image</button>
                 <div class="image-preview">
                     <?php if (!empty($term_meta['store-icon'])) : ?>
                         <img src="<?php echo esc_url($term_meta['store-icon']); ?>" style="max-width: 100px; max-height: 100px;" />
@@ -235,8 +264,9 @@ class CustomStoreMapPlugin
                 <p class="description">Upload or select an image for the store's icon.</p>
             </td>
         </tr>
-    <?php
+<?php
     }
+
 
     public function save_taxonomy_fields($term_id)
     {
