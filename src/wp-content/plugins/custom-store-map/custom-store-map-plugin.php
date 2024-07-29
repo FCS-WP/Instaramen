@@ -20,7 +20,7 @@ class CustomStoreMapPlugin
 
         add_action('admin_menu', array($this, 'create_admin_menu'));
         add_action('admin_enqueue_scripts', array($this, 'enqueue_admin_scripts'));
-        add_action('wp_enqueue_scripts', array($this, 'enqueue_scripts'));
+        add_action('wp_enqueue_scripts', array($this, 'register_scripts'));
         add_shortcode('custom_store_map', array($this, 'shortcode_callback'));
         add_action('admin_init', array($this, 'register_settings'));
         add_action('store-name_add_form_fields', array($this, 'add_taxonomy_fields'));
@@ -54,20 +54,27 @@ class CustomStoreMapPlugin
         wp_enqueue_style('thickbox');
     }
 
-    public function enqueue_scripts()
+    public function register_scripts()
     {
         $api_key = get_option('custom_store_map_api_key', '');
         $location_country = get_option('custom_store_map_location_country', '10.8231,106.6297'); // Default to Ho Chi Minh City
         $zoom_level = get_option('custom_store_map_zoom_level', '7'); // Default to level 7
 
         wp_enqueue_script('google-maps-api', 'https://maps.googleapis.com/maps/api/js?key=' . $api_key, array(), null, true);
-        wp_enqueue_script('custom-store-map', plugin_dir_url(__FILE__) . 'js/custom-store-map.js', array('jquery'), null, true);
+        wp_script_add_data('google-maps-api', 'async', true);
+        wp_script_add_data('google-maps-api', 'defer', true);
+
+
+        wp_enqueue_script('custom-store-map', plugin_dir_url(__FILE__) . 'js/custom-store-map.js', array('jquery', 'google-maps-api'), null, true);
         wp_localize_script('custom-store-map', 'customStoreMapSettings', array(
             'location_country' => $location_country,
             'zoom_level' => $zoom_level
         ));
+
+
         wp_enqueue_style('custom-store-map', plugin_dir_url(__FILE__) . 'css/custom-store-map.css');
     }
+
 
     public function admin_page_callback()
     {
@@ -78,6 +85,11 @@ class CustomStoreMapPlugin
     {
         ob_start();
         include 'templates/map-template.php';
+
+        wp_enqueue_script('google-maps-api');
+        wp_enqueue_script('custom-store-map');
+        wp_enqueue_style('custom-store-map');
+
         return ob_get_clean();
     }
 
