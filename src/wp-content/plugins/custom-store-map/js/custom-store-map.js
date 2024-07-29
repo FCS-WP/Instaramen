@@ -89,6 +89,5 @@ jQuery(document).ready(function($) {
         }
         updateStoreList(locations);
     }
-
-    google.maps.event.addDomListener(window, 'load', initMap);
+    window.addEventListener('load', initMap);
 });
