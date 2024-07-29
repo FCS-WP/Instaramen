@@ -60,19 +60,17 @@ class CustomStoreMapPlugin
         $location_country = get_option('custom_store_map_location_country', '10.8231,106.6297'); // Default to Ho Chi Minh City
         $zoom_level = get_option('custom_store_map_zoom_level', '7'); // Default to level 7
 
-        wp_enqueue_script('google-maps-api', 'https://maps.googleapis.com/maps/api/js?key=' . $api_key, array(), null, true);
+     
+
+        wp_register_script('google-maps-api', 'https://maps.googleapis.com/maps/api/js?key=' . $api_key, array(), null, true);
         wp_script_add_data('google-maps-api', 'async', true);
         wp_script_add_data('google-maps-api', 'defer', true);
-
-
-        wp_enqueue_script('custom-store-map', plugin_dir_url(__FILE__) . 'js/custom-store-map.js', array('jquery', 'google-maps-api'), null, true);
+        wp_register_script('custom-store-map', plugin_dir_url(__FILE__) . 'js/custom-store-map.js', array('jquery'), null, true);
         wp_localize_script('custom-store-map', 'customStoreMapSettings', array(
             'location_country' => $location_country,
             'zoom_level' => $zoom_level
         ));
-
-
-        wp_enqueue_style('custom-store-map', plugin_dir_url(__FILE__) . 'css/custom-store-map.css');
+        wp_register_style('custom-store-map', plugin_dir_url(__FILE__) . 'css/custom-store-map.css');
     }
 
 
