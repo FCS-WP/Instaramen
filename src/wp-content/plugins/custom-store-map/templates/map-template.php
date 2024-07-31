@@ -34,7 +34,9 @@ $default_icon = '/wp-content/plugins/custom-store-map/images/icon-map-store.png'
                         <img src="<?php echo $location['icon'] ? esc_url($location['icon']) : esc_url($default_icon); ?>" alt="<?php echo esc_attr($location['name']); ?>" style="max-width: 50px; max-height: 50px;">
                         <strong><?php echo esc_html($location['name']); ?></strong>
                     </div>
-                    <span><?php echo esc_html($location['address']); ?></span>
+                    <div class="store-address">
+                        <span ><?php echo esc_html($location['address']); ?></span>
+                    </div>
                 </div>
             <?php endforeach; ?>
         </div>
