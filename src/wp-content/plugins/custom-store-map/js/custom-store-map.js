@@ -2,13 +2,14 @@ jQuery(document).ready(function($) {
     var defaultIcon = '/wp-content/plugins/custom-store-map/images/icon-map-store.png';
     var locationCountry = customStoreMapSettings.location_country.split(',');
     var zoomLevel = parseInt(customStoreMapSettings.zoom_level, 10);
+
     function initMap() {
+        var locations = customStoreMapData;
+        var location = locations.length > 0 ? locations[0].location.split(',') : locationCountry;
         var map = new google.maps.Map(document.getElementById('custom-map'), {
             zoom: zoomLevel,
-            center: {lat: parseFloat(locationCountry[0]), lng: parseFloat(locationCountry[1])}
+            center: { lat: parseFloat(location[0]), lng: parseFloat(location[1]) }
         });
-
-        var locations = customStoreMapData;
         var markers = [];
 
         function addMarkers(locations) {
@@ -16,11 +17,11 @@ jQuery(document).ready(function($) {
                 marker.setMap(null);
             });
             markers = [];
-             
+
             locations.forEach(function(location) {
-                var icon = location.icon ? location.icon : defaultIcon; 
+                var icon = location.icon ? location.icon : defaultIcon;
                 var marker = new google.maps.Marker({
-                    position: {lat: parseFloat(location.location.split(',')[0]), lng: parseFloat(location.location.split(',')[1])},
+                    position: { lat: parseFloat(location.location.split(',')[0]), lng: parseFloat(location.location.split(',')[1]) },
                     map: map,
                     title: location.name,
                     icon: {
@@ -59,19 +60,19 @@ jQuery(document).ready(function($) {
         $('#store-list').on('click', '.store-item', function() {
             $('#store-list .store-item').removeClass('active');
             $(this).addClass('active');
-            
+
             var location = $(this).data('location').split(',');
             var latLng = new google.maps.LatLng(parseFloat(location[0]), parseFloat(location[1]));
             map.setCenter(latLng);
             map.setZoom(16);
         });
-        
+
         $(document).on('click', function(event) {
             if (!$(event.target).closest('.store-item').length) {
                 $('#store-list .store-item').removeClass('active');
             }
         });
-        
+
         function updateStoreList(locations) {
             var storeList = $('#store-list');
             storeList.empty();
@@ -82,7 +83,9 @@ jQuery(document).ready(function($) {
                     <div class="d-flex align-items-center">
                         <img src="${icon}" alt="${location.name}" style="max-width: 50px; max-height: 50px;">
                         <strong>${location.name}</strong></div>
-                        <span>${location.address}</span>
+                        <div class="store-address">
+                        <span >${location.address}</span>
+                        </div>
                     </div>`
                 );
             });
