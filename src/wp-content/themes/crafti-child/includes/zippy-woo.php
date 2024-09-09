@@ -25,3 +25,13 @@ function display_product_categories_in_loop() {
     
 }
 add_action('woocommerce_before_shop_loop_item', 'display_product_categories_in_loop', 15);
+
+// Add sentence sign up now and get FREE 500 point
+add_action('woocommerce_before_checkout_form', 'custom_text_before_cart');
+add_action('woocommerce_before_cart_table', 'custom_text_before_cart');
+function custom_text_before_cart() {
+  if (is_cart()) {
+        echo '<p class="custom-notification">Sign up now and get FREE 500 points - Click <a href="/my-account">here</a> to register </p>';
+    }
+}
+
