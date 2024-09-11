@@ -151,6 +151,8 @@ $trx_addons_form_style = 'iconed';	//trx_addons_get_option('input_hover');
 																)
 														);
 							?>
+							<div id="status-password"></div>
+							
 						</div>
 						<div class="trx_addons_popup_form_field trx_addons_popup_form_field_password">
 							<?php
@@ -176,6 +178,7 @@ $trx_addons_form_style = 'iconed';	//trx_addons_get_option('input_hover');
 							</div><?php
 						}
 						?>
+						<?php echo do_shortcode('[bws_google_captcha]'); ?>
 						<div class="trx_addons_popup_form_field trx_addons_popup_form_field_submit">
 							<input type="submit" class="submit_button" value="<?php esc_attr_e('Sign Up', 'trx_addons'); ?>"<?php
 								if ( false && !empty($trx_addons_privacy) ) {
