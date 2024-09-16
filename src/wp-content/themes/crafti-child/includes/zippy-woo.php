@@ -63,3 +63,15 @@ function ahirwp_translate_woocommerce_strings( $translated, $untranslated, $doma
    return $translated;
  
 }
+
+function custom_flat_rate_shipping( $rates, $package ) {
+   // Get the cart total
+   $cart_total = WC()->cart->subtotal;
+
+   if($cart_total >= 50 ){
+      unset( $rates['flat_rate:2']);
+   }
+   
+   return $rates;
+}
+add_filter( 'woocommerce_package_rates', 'custom_flat_rate_shipping', 10, 2 );

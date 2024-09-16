@@ -141,7 +141,7 @@ if ( ! function_exists( 'trx_addons_users_localize_script' ) ) {
 		$vars['msg_email_not_valid']		= addslashes( esc_html__('E-mail address is invalid', 'trx_addons') );
 		$vars['msg_password_not_equal']		= addslashes( esc_html__('The passwords in both fields are not equal', 'trx_addons') );
 		$vars['msg_registration_success']	= (int)trx_addons_get_option( 'double_opt_in_registration' ) > 0
-												? addslashes( esc_html__('Thank you for registering. Please confirm registration by clicking on the link in the letter sent to the specified email.', 'trx_addons') )
+												? addslashes( esc_html__('Thank you for registering. Please confirm your registration by clicking on the link in the email sent to the specified email. If you do not see the email please check your spam folder.', 'trx_addons') )
 												: addslashes( esc_html__('Registration success! Please log in!', 'trx_addons') );
 		$vars['msg_registration_error']		= addslashes( esc_html__('Registration failed!', 'trx_addons') );
 		return $vars;
