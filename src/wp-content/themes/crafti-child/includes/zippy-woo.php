@@ -71,7 +71,7 @@ function custom_flat_rate_shipping( $rates, $package ) {
    if($cart_total >= 50 ){
       unset( $rates['flat_rate:2']);
    }
-   var_dump($cart_total);
+   
    return $rates;
 }
 add_filter( 'woocommerce_package_rates', 'custom_flat_rate_shipping', 10, 2 );
