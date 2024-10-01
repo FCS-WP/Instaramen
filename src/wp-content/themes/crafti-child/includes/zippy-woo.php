@@ -75,3 +75,35 @@ function custom_flat_rate_shipping( $rates, $package ) {
    return $rates;
 }
 add_filter( 'woocommerce_package_rates', 'custom_flat_rate_shipping', 10, 2 );
+
+add_action( 'woocommerce_thankyou', 'join_membership_thankyou_page', 10, 1 );
+
+function join_membership_thankyou_page() {
+    $signup_points = get_option( 'wc_points_rewards_account_signup_points' );
+
+    echo '<div class="message-join-membership">';
+    echo '<h2>Get Free $' . $signup_points . '</h2>';
+    echo '<p>Click <a href="/my-account">Here</a> to join membership with us</p>';
+    echo '</div>';
+}
+ 
+function join_membership_after_register_form() {
+    $signup_points = get_option( 'wc_points_rewards_account_signup_points' );
+    ?>
+    <div class="message-join-membership">
+    <h2>Member benefits</h2>
+    <ul>
+        <li>Get Free $<?php echo $signup_points; ?></li>
+        <li>Earn points when making purchases</li>
+        <li>Use points to make purchases</li>
+    </ul>
+    <?php
+}
+
+add_action( 'woocommerce_register_form', 'join_membership_after_register_form' );
+
+function custom_woocommerce_registration_redirect( $redirect ) {
+    $redirect = home_url( '/my-account/points-and-rewards/' );
+    return $redirect;
+}
+add_filter( 'woocommerce_registration_redirect', 'custom_woocommerce_registration_redirect' );
