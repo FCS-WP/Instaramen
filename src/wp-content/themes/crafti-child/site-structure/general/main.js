@@ -1,5 +1,8 @@
 //function check strong password register form
-document.querySelector('.trx_addons_popup_form_register .sc_form_field_password .sc_form_field_wrap input').addEventListener('input', event => {
+var passwordInput = document.querySelector('.trx_addons_popup_form_register .sc_form_field_password .sc_form_field_wrap input');
+
+if (passwordInput) {
+    passwordInput.addEventListener('input', event => {
     const password = document.querySelector('.trx_addons_popup_form_register .sc_form_field_password .sc_form_field_wrap input').value;
     const strengthIndicator = document.getElementById("status-password");
 
@@ -45,3 +48,6 @@ document.querySelector('.trx_addons_popup_form_register .sc_form_field_password 
             strengthIndicator.textContent = "";
     }
 })
+} else {
+    return;
+}
