@@ -112,3 +112,11 @@ function custom_woocommerce_registration_redirect( $redirect ) {
     return $redirect;
 }
 add_filter( 'woocommerce_registration_redirect', 'custom_woocommerce_registration_redirect' );
+
+// Add custom content after product short description in the loop
+add_action( 'woocommerce_after_shop_loop_item_title', 'add_custom_content_after_short_description', 9 );
+function add_custom_content_after_short_description() {
+    global $product;
+
+    echo '<p>' . wp_trim_words( $product->get_short_description(),19 ) . '</p>'; 
+}
