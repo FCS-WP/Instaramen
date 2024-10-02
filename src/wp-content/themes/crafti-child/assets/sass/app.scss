@@ -201,3 +201,276 @@
       }
     }
   }
+
+
+  .page_content_wrap{
+    background: #F9F7F1 !important;
+  }
+  
+  #store-list .store-item{
+    cursor: pointer;
+  }
+  .name-category-in-loop{
+    font-size: 60%;
+    z-index: 999;
+    padding: 2px 15px;
+  }
+  
+  .logo-white img, .menu_mobile .sc_layouts_logo img {
+      filter: brightness(0) invert(1);
+  }
+  .store-list{
+    display:none;
+  }
+  
+  .loop-product-custom img, .post_featured img{
+    width: 100%;
+    height: 300px !important;
+    object-fit: cover;
+  }
+  
+  p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, font, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, input, textarea, button, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, address, section, a{
+    font-family: "Moderustic", Sans-serif !important;
+  }
+  h1, h2, h3, h4, h5, h6{
+    font-family: "Bowlby One", Sans-serif;
+  }
+  
+  .button-link-custom, .sc_button.sc_button_default.sc_button_size_normal.sc_button_icon_left{
+    background: #233D1c !important;
+    color: #FEE569 !important;
+    text-transform: uppercase;
+    padding: 10px 35px;
+    border-radius: 30px;
+    font-weight:bold;
+    letter-spacing: 3px;
+  }
+  
+  .sc_layouts_menu li:hover{
+    background: #fee569;
+    
+  }
+  .sc_layouts_menu li:hover a{
+    color: #233d1c !important;
+    transition: 0s !important;
+  }
+  .sc_layouts_menu li .sub-menu{
+    background: #233d1c !important;
+    transform: translate(0,-35px);
+    
+  }
+  .sc_layouts_menu li .sub-menu a{
+    color: #FFF !important;
+    text-transform: uppercase;
+    font-weight: bolder;
+    text-align: center;
+  }
+  
+  .sc_layouts_menu_nav > li.current-menu-item > a{
+    color: #f47628 !important;
+  }
+  
+  .infor-col-product form{
+    display: block !important;
+    width: 100% !important;
+    margin-bottom: 20px !important;
+  }
+  .infor-col-product .wc-points-rewards-product-message{
+    display: block;
+  }
+  .woocommerce div.product .product_meta span{
+    width: 100%;
+  }
+  
+  .post_meta_other, .post_meta_categories{
+    display: none;
+  }
+  .widget_categories ul li:last-child{
+    display: none;
+  }
+  
+  .elementor-post__badge{
+    background: #233D1c !important;
+  }
+  
+  .elementor-pagination{
+    margin-top: 40px;
+  }
+  
+  .image-product-loop .post_featured.with_thumb{
+    display: flex;
+    justify-content: center;
+  }
+  
+  .post_header_wrap_style_style-1 .post_featured.post_featured_bg{
+    height: 25rem ;
+  }
+  
+  .post_content.post_content_single.entry-content p{
+    font-size: 20px;
+  }
+  
+  .post_content.post_content_single.entry-content h6{
+    font-size: 22px;
+  }
+  .post_content.post_content_single.entry-content h4{
+    font-size: 24px;
+  }
+  .post_content.post_content_single.entry-content h3{
+    font-size: 26px;
+  }
+  .post_content.post_content_single.entry-content h2{
+    font-size: 28px;
+  }
+  .post_content.post_content_single.entry-content h1{
+    font-size: 30px;
+  }
+  
+  .box-faq-custom .elementor-widget-wrap .elementor-element:first-child{
+    background: #edf3f6;
+    min-height: 96px;
+    font-weight: bolder;
+    padding: 20px;
+    color: #000;
+    border-radius: 30px 30px 0 0;
+  }
+  
+  .box-faq-custom .elementor-widget-wrap .elementor-element:last-child{
+    min-height: 208px !important;
+    background: #f47628;
+    color: #fff;
+    padding: 20px;
+    border-radius: 0 0 30px 30px;
+  }
+  
+  .green-backround .elementor-widget-wrap .elementor-element:last-child{
+    background: #233D1c !important;
+  }
+  
+  #custom-map{
+      width: 100% !important;
+    }
+  
+  .sc_layouts_login_menu ul{
+    background: #233d1c !important;
+  }
+  
+  .sc_layouts_login_menu ul a span{
+    color: #fff !important;
+  }
+  
+  .woocommerce-info{
+    margin-bottom: 20px !important;
+  }
+  
+  .custom-notification{
+    text-align: center;
+    margin-bottom: 50px !important;
+  }
+  
+  .custom-notification a{
+    font-weight: bolder;
+    text-transform: uppercase;
+  }
+  
+  .submenu{
+    background: #233d1c !important;
+  }
+  
+  .submenu li a span{
+    color: #fff !important;
+  }
+  
+  .post_layout_classic_4 .post_title{
+    font-size: 18px !important;
+  }
+  
+  @media(max-width: 678px){
+    .button-a-tag-responsive a{
+    display: block;	
+    margin-bottom: 10px;
+      text-align: center;
+    }
+    .dropdown-responsive span{
+      display: block;
+    }
+    
+  }
+  
+  .whapsapp-wrapper {
+      width: 52px;
+      position: fixed;
+      bottom: 80px;
+      right: 33px;
+      text-align: center;
+      z-index: 99999;
+  }
+  
+  #whatsappButton {
+      display: inline-block;
+      position: relative;
+      width: 50px;
+      height: 50px;
+      line-height: 50px;
+      border-radius: 100%;
+      background: url('/wp-content/uploads/2024/09/whatsapp-icon.png') center center no-repeat;
+      background-size: 100%;
+  }
+  
+  a#whatsappButton span{
+      z-index: 10;
+      display: none;
+      padding: 10px;
+      left: -250px;
+      top: 5px;
+      width: 240px;
+      line-height: 16px;
+      border-radius: 4px;
+      box-shadow: 5px 5px 8px #CCC;
+  }
+  
+  a#whatsappButton:hover span{
+      display: inline;
+      position: absolute;
+      color: #111;
+      border: 1px solid #DCA;
+      background: #fffAF0;
+  }
+  
+  .adp-popup-overlay{
+    z-index: 199999;
+  }
+  
+  .adp-popup{
+    z-index: 200000;
+  }
+  
+  .mfp-content{
+    z-index: 200003;
+  }
+  
+  .gglcptch_recaptcha{
+    display: flex;
+    justify-content: left;
+  }
+  
+  .logo-medium img{
+    width: 110px;
+  }
+  
+  .top_panel_title.sc_layouts_row.sc_layouts_row_type_normal{
+    display: none
+  }
+  
+  .message-join-membership h2{
+    font-size: 25px;
+    text-align: left;
+  }
+  
+  .message-join-membership ul li, .woocommerce form .form-row label, .woocommerce-page form .form-row label, .woocommerce-form-register p{
+    text-align: left;
+  }
+  
+  .thank-you-page-message h2,.thank-you-page-message p{
+    text-align: center !important;
+  }

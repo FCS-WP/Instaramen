@@ -82,7 +82,7 @@ function join_membership_thankyou_page() {
     $signup_points = get_option( 'wc_points_rewards_account_signup_points' );
     if ( !is_user_logged_in() ) {
     ?>
-    <div class="message-join-membership">
+    <div class="message-join-membership thank-you-page-message">
         <h2>Get Free $<?php echo $signup_points; ?></h2>
         <p>Click <a href="/my-account">Here</a> to join membership with us</p>
     </div>
