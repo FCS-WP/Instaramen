@@ -76,19 +76,23 @@ function custom_flat_rate_shipping( $rates, $package ) {
 }
 add_filter( 'woocommerce_package_rates', 'custom_flat_rate_shipping', 10, 2 );
 
-add_action( 'woocommerce_thankyou', 'join_membership_thankyou_page', 10, 1 );
+add_action( 'woocommerce_thankyou', 'join_membership_thankyou_page', 0, 1 );
 
 function join_membership_thankyou_page() {
     $signup_points = get_option( 'wc_points_rewards_account_signup_points' );
-
-    echo '<div class="message-join-membership">';
-    echo '<h2>Get Free $' . $signup_points . '</h2>';
-    echo '<p>Click <a href="/my-account">Here</a> to join membership with us</p>';
-    echo '</div>';
+    if ( !is_user_logged_in() ) {
+    ?>
+    <div class="message-join-membership thank-you-page-message">
+        <h2>Get Free $<?php echo $signup_points; ?></h2>
+        <p>Click <a href="/my-account">Here</a> to join membership with us</p>
+    </div>
+    <?php
+    }
 }
  
 function join_membership_after_register_form() {
     $signup_points = get_option( 'wc_points_rewards_account_signup_points' );
+    if ( !is_user_logged_in() ) {
     ?>
     <div class="message-join-membership">
     <h2>Member benefits</h2>
@@ -98,6 +102,7 @@ function join_membership_after_register_form() {
         <li>Use points to make purchases</li>
     </ul>
     <?php
+    }
 }
 
 add_action( 'woocommerce_register_form', 'join_membership_after_register_form' );
@@ -107,3 +112,12 @@ function custom_woocommerce_registration_redirect( $redirect ) {
     return $redirect;
 }
 add_filter( 'woocommerce_registration_redirect', 'custom_woocommerce_registration_redirect' );
+
+// Add custom content after product short description in the loop
+
+add_action( 'woocommerce_shop_loop_item_title', 'add_custom_content_after_short_description', 9 );
+function add_custom_content_after_short_description() {
+    global $product;
+
+    echo '<p>' . wp_trim_words( $product->get_short_description(),19 ) . '</p>'; 
+}
